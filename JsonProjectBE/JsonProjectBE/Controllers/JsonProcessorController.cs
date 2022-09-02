@@ -21,19 +21,19 @@ namespace JsonProjectBE.Controllers
 
         private readonly ILogger<JsonProcessorController> _logger;
         private IDBRepo _db;
-        private JsonHandler _handler;
 
-        public JsonProcessorController(ILogger<JsonProcessorController> logger, Mongo db, JsonHandler handler)
+        public JsonProcessorController(ILogger<JsonProcessorController> logger, Mongo db)
         {
             _db = db;
             _logger = logger;
-            _handler = handler;
         }
 
 
         [HttpPost(Name = "PostJsonProcessor")]
         public async Task<response> Post([FromBody] Models.Request request)
         {
+
+            JsonHandler _handler = new JsonHandler();
             //RETURN A DOCUMENT
             var data = _handler.Transform(request);
 

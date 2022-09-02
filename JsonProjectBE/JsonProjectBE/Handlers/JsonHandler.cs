@@ -10,11 +10,9 @@ namespace JsonProjectBE.Handlers
         {
             Document document = new Document();
 
-            //document.date = DateTime.Now.TimeOfDay;
-            ////ClientID
-            //document.ClientId = request.CliendId;
-            ////timespan
-
+            document.ClientId = request.ClientId;
+            document.date = DateTime.Now.TimeOfDay;
+            
             return document;
         }
         //    var client = "client1";
