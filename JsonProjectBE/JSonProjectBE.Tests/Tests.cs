@@ -11,10 +11,10 @@ namespace JSonProjectBE.Tests
     public class Tests
     {
         [Fact]
-        public async Task TestingGetTimesClicked()
+        public async Task TestingPost()
         {
             JObject data=new JObject();
-            data.Add("data", JObject.Parse(@"{""operationID"":""7887"",""VAT"":""89867""}"));
+            data.Add("data", JObject.Parse(@"{'operationID':""7887"",'VAT':""89867""}"));
             var request = new Request
             {
                 ClientId = "client_1",
@@ -26,7 +26,9 @@ namespace JSonProjectBE.Tests
 
             response expected_response = new response { message = "Document saved succesfully", status = "OK" };
 
-            Assert.Equal(expected_response.ToString(), controller.Post(request).ToString());
+            String expectedString = expected_response.message;
+            String result = controller.Post(request).Result.message;
+            Assert.Equal(expectedString,result);
         }
     }
 }

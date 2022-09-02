@@ -9,8 +9,6 @@ namespace JsonProjectBE.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authenticate]
-
     // ---> HTTP Request --> ControllerBase (Http...) --->  [ --> [ActionFilter.onRequest] --> Post() --> [ActionFilter.onRequested] --> ] ---> HttResponse
     public class JsonProcessorController : ControllerBase
     {
