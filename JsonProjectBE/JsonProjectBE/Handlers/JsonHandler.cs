@@ -1,20 +1,24 @@
 ﻿using JsonProjectBE.Models;
 using Newtonsoft.Json.Linq;
 using JsonProjectBE.DBRepo;
+using MongoDB.Bson;
 
 namespace JsonProjectBE.Handlers
 {
     public class JsonHandler
     {
-        public Document Transform(Request request)
+        public Document CrafBaseDocument(Request request)
         {
             Document document = new Document();
 
             document.ClientId = request.ClientId;
             document.date = DateTime.Now.TimeOfDay;
-            
+            document.originalFile = BsonDocument.Parse( request.Data.ToString() );
+            document.extractedFile = BsonDocument.Parse(request.Data.ToString());
             return document;
         }
+
+        //public BsonDocument TransformForCustomerSchema()
         //    var client = "client1";
         //    request.CliendId
         //    Document document = new Document();
