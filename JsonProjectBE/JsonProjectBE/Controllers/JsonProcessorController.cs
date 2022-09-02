@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using JsonProjectBE.DBRepo;
 using Newtonsoft.Json.Linq;
 
+using JsonProjectBE.Handlers;
+
+
 namespace JsonProjectBE.Controllers
 {
     [ApiController]
@@ -32,10 +35,12 @@ namespace JsonProjectBE.Controllers
         public async Task<response> Post([FromBody] Models.Request request)
         {
 
-            //var data = request.Data.SelectTokens("$..Products[?(@.Price >= 50)].Name"); 
-            //if (_db.asyncStoreJson(data.ToString()).IsCompletedSuccessfully)
-            //if (_db.AsyncStoreJson(data.ToString()).IsCompletedSuccessfully)
-            if (_handler.Transform(request))
+            JsonHandler _handler = new JsonHandler();
+            //RETURN A DOCUMENT
+            var data = _handler.Transform(request);
+
+            //STORE DOCUMENT UN MONGODB
+            if ( _db.AsyncStoreDocument(data).IsCompletedSuccessfully )
             {
                 return new response { message = "Document saved succesfully", status = "OK" };
             }
@@ -44,6 +49,12 @@ namespace JsonProjectBE.Controllers
                 return new response { message = "Document not saved", status = "FAILED" };
 
             }
+
+            //var data = request.Data.SelectTokens("$..Products[?(@.Price >= 50)].Name"); 
+            //if (_db.asyncStoreJson(data.ToString()).IsCompletedSuccessfully)
+            //if (_db.AsyncStoreJson(data.ToString()).IsCompletedSuccessfully)
+
+
             //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             //{
             //    Date = DateTime.Now.AddDays(index),
