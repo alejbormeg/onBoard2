@@ -24,8 +24,6 @@ namespace JsonProjectBE.DBRepo
             _userCollection = mongoDatabase.GetCollection<UserConfig>("UserConfig");
         }
 
-      
-
         /// <summary>
         /// Store the content in MongoDB and logs the process 
         /// </summary>
@@ -34,10 +32,7 @@ namespace JsonProjectBE.DBRepo
         public Task AsyncStoreJson(JObject data)
         {
             String dataSave = data.ToString();
-            //Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
-
-            
-            
+            //Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);           
             Document document = new Document
             {
                 originalFile = data,
@@ -52,6 +47,9 @@ namespace JsonProjectBE.DBRepo
 
         public Task AsyncStoreDocument(Document document)
         {
+            _documentCollection.InsertOneAsync(document);
+            return Task.CompletedTask;
+        } 
             //Document document = new Document
             //{
             //    originalFile = JObject.Parse(data),
@@ -59,10 +57,9 @@ namespace JsonProjectBE.DBRepo
             //    date = DateTime.Now.TimeOfDay,
             //    ClientId = "Pedro Melenas"
             //};
-            _documentCollection.InsertOneAsync(document);
-            return Task.CompletedTask;
             //return _userCollection.
-        }
+
+        //---------------------------------------------------------------
 
         //public String AsyncGetRequiredField(string user)
         //{

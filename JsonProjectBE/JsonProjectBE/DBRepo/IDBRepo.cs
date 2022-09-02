@@ -7,6 +7,5 @@ namespace JsonProjectBE.DBRepo
     {
         public Task AsyncStoreJson(JObject data);
         public Task AsyncStoreDocument(Document document);
-        public async Task<String> AsyncGetRequiredField(string user);
     }
 }
