@@ -29,21 +29,11 @@ namespace JsonProjectBE.Controllers
         [HttpPost(Name = "PostJsonProcessor")]
         public async Task<response> Post([FromBody] Models.Request request)
         {
-            try
-            {
-                //if(userHandler.ValidateUserId(userHanlder.GetUserById(data["customerId"])))
-                    // mongoDbService.Store(CustomerJsonHandler.Treat(data).ToString())
-                
-            }
-            catch
-            {
-                
 
-            }
-            var data = request.Data.SelectTokens("$..Products[?(@.Price >= 50)].Name"); 
-
+            //var data = request.Data.SelectTokens("$..Products[?(@.Price >= 50)].Name"); 
             //if (_db.asyncStoreJson(data.ToString()).IsCompletedSuccessfully)
-            if (_db.AsyncStoreJson(data.ToString()).IsCompletedSuccessfully)
+            //if (_db.AsyncStoreJson(data.ToString()).IsCompletedSuccessfully)
+            if (_handler.Transform(request))
             {
                 return new response { message = "Document saved succesfully", status = "OK" };
             }
@@ -68,9 +58,11 @@ namespace JsonProjectBE.Controllers
 
 /*    
 {
-    "cliendId": "string",
+    "cliendId": "cli1",
     "data": {
-                "VAT"= "string
+                "VAT"= {}
+                "pokemons"=[]
+                "operationid"="string"
             }
 }
 */

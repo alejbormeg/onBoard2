@@ -12,6 +12,6 @@ namespace JsonProjectBE.Models
         public JObject originalFile { get; set; }
         public JObject extractedFile { get; set; }
         public TimeSpan date { get; set; }
-        public string user { get; set; }
+        public string ClientId { get; set; }
     }
 }

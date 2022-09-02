@@ -8,7 +8,7 @@ namespace JsonProjectBE.Models
         [BsonId]
         [BsonRepresentation(BsonType.String)]
         public ObjectId _id { get; set; }
-        public string Name { get; set; }
-        public string userid { get; set; }
+        public string userId { get; set; }
+        public string wantedField { get; set; }
     }
 }
