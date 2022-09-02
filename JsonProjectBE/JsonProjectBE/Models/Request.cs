@@ -4,7 +4,7 @@ namespace JsonProjectBE.Models
 {
     public class Request
     {
-        public string CliendId { get; set; }
+        public string ClientId { get; set; }
         public JObject Data { get; set; }
     }
 }

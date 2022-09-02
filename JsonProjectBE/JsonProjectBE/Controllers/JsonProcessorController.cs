@@ -6,6 +6,9 @@ namespace JsonProjectBE.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authenticate]
+
+    // ---> HTTP Request --> ControllerBase (Http...) --->  [ --> [ActionFilter.onRequest] --> Post() --> [ActionFilter.onRequested] --> ] ---> HttResponse
     public class JsonProcessorController : ControllerBase
     {
         public class response
@@ -24,7 +27,6 @@ namespace JsonProjectBE.Controllers
             _db = db;
             _logger = logger;
         }
-       
 
         [HttpPost(Name = "PostJsonProcessor")]
         public async Task<response> Post([FromBody] Models.Request request)

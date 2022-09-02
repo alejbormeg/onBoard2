@@ -34,10 +34,7 @@ namespace JsonProjectBE.DBRepo
         public Task AsyncStoreJson(JObject data)
         {
             String dataSave = data.ToString();
-            //Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, object>>(data);
-
-            
-            
+                      
             Document document = new Document
             {
                 originalFile = data,
@@ -52,33 +49,10 @@ namespace JsonProjectBE.DBRepo
 
         public Task AsyncStoreDocument(Document document)
         {
-            //Document document = new Document
-            //{
-            //    originalFile = JObject.Parse(data),
-            //    extractedFile = JObject.Parse(data),
-            //    date = DateTime.Now.TimeOfDay,
-            //    ClientId = "Pedro Melenas"
-            //};
             _documentCollection.InsertOneAsync(document);
             return Task.CompletedTask;
-            //return _userCollection.
         }
 
-        //public String AsyncGetRequiredField(string user)
-        //{
-        //    //var requiredUser= _userCollection.Find(p => p.userid==user);
-        //    var requiredField = from _user in _userCollection.AsQueryable()
-        //                        where _user.userid.Contains(user)
-        //                        select _user.wantedField;
-
-        //    var asdf= requiredField.ToString();
-        //    return asdf;
-        //}
-
-        //public Task<String> AsyncGetRequiredField(string user)
-        //    => _userCollection.Find(f => f.Name == user)
-        //    ?.Select(s => new String (s.wantedField));
-        //}
         public async Task<String> AsyncGetRequiredField(string user)
         {
             var _user= await _userCollection.Find(x => x.userId == user).FirstOrDefaultAsync();
