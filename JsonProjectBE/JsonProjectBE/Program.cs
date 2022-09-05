@@ -1,4 +1,5 @@
 using JsonProjectBE.DBRepo;
+using Microsoft.Extensions.Http;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +15,9 @@ builder.Services.AddSingleton<Mongo>();
 
 builder.Services.AddScoped<IDBRepo,Mongo>();
 
+//builder.AddHttpClient<IPokemonService, PokemonService>();
+
+builder.HttpClientFactoryServiceCollectionExtensions.AddHttpClient();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
