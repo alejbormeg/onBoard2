@@ -32,10 +32,13 @@ namespace JsonProjectBE.Controllers
         [HttpPost(Name = "PostJsonProcessor")]
         public async Task<response> Post([FromBody] Models.Request request)
         {
+            //var data = _handler.CrafBaseDocument(request);
+
+            //var customerSchema = _db.Customer.GetSchema(data.ClientId);
 
             JsonHandler _handler = new JsonHandler();
             //RETURN A DOCUMENT
-            var data = _handler.Transform(request);
+            var data = _handler.CrafBaseDocument(request);
 
             //STORE DOCUMENT UN MONGODB
             if ( _db.AsyncStoreDocument(data).IsCompletedSuccessfully )
