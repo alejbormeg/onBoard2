@@ -1,6 +1,9 @@
 using JsonProjectBE.DBRepo;
 using Microsoft.Extensions.Http;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using JsonProjectBE.Services;
+using Polly;
+using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +20,18 @@ builder.Services.AddScoped<IDBRepo,Mongo>();
 
 //builder.AddHttpClient<IPokemonService, PokemonService>();
 
-builder.HttpClientFactoryServiceCollectionExtensions.AddHttpClient();
+builder.Services.AddHttpClient<IPokemonService, PokemonService>()
+                .AddPolicyHandler(GetRetryPolicy());
+
+IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+{
+    return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
+                                                                        retryAttempt)));
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

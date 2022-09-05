@@ -1,9 +1,11 @@
 using JsonProjectBE.Controllers;
 using JsonProjectBE.DBRepo;
 using JsonProjectBE.Models;
+using JsonProjectBE.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json.Linq;
+using System.Net;
 using static JsonProjectBE.Controllers.JsonProcessorController;
 
 namespace JSonProjectBE.Tests
@@ -30,5 +32,18 @@ namespace JSonProjectBE.Tests
             String result = controller.Post(request).Result.message;
             Assert.Equal(expectedString,result);
         }
+
+        [Fact]
+        public async Task TestingRetry()
+        {
+            var mock_http_client = new Mock<HttpClient>();
+            var task = new Mock<Task<HttpResponseMessage>>();
+            task.Setup(x => x.Result).Returns(new HttpResponseMessage(HttpStatusCode.BadRequest));
+            //Change the get async behaviour
+            mock_http_client.Setup(p => p.GetAsync("https://pokeapi.co/api/v2/pokemon/ditto")).Returns();
+
+        }
     }
+
+    
 }
