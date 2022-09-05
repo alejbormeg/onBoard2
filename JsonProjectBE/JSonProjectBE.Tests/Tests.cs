@@ -14,16 +14,16 @@ namespace JSonProjectBE.Tests
         public async Task TestingPost()
         {
             JObject data=new JObject();
-            data.Add("data", JObject.Parse(@"{'operationID':""7887"",'VAT':""89867""}"));
+
+            data.Add("data", JObject.Parse(@"{'dedication':""sport clothes"",'prices':""medium"",'quality':""high""}"));
             var request = new Request
             {
-                ClientId = "client_1",
+                ClientId = "adidas",
                 Data = data
             };
             var logger = new Mock<ILogger<JsonProcessorController>>();
             var mongo = new Mongo();
             JsonProcessorController controller = new JsonProcessorController(logger.Object, mongo);
-
             response expected_response = new response { message = "Document saved succesfully", status = "OK" };
 
             String expectedString = expected_response.message;
