@@ -16,9 +16,10 @@ namespace JsonProjectBE.Handlers
             document.originalFile = BsonDocument.Parse( request.Data.ToString() );
 
             JObject extracted= new JObject();
-            extracted.Add("prices", request.Data["prices"]?.ToString());
-
-
+            foreach ( var field in fields)
+            {
+                extracted.Add(field, request.Data[field]?.ToString());
+            }
             document.extractedFile = BsonDocument.Parse( extracted.ToString() );
             return document;
         }
