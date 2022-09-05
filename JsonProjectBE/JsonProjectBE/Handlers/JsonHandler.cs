@@ -14,7 +14,11 @@ namespace JsonProjectBE.Handlers
             document.ClientId = request.ClientId;
             document.date = DateTime.Now.TimeOfDay;
             document.originalFile = BsonDocument.Parse( request.Data.ToString() );
-            document.extractedFile = BsonDocument.Parse(request.Data.ToString());
+
+            JObject extracted= new JObject();
+            extracted.Add("prices", request.Data["prices"].ToString());
+
+            document.extractedFile = BsonDocument.Parse( extracted.ToString() );
             return document;
         }
 
