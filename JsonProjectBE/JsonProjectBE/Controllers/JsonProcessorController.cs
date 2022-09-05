@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using JsonProjectBE.DBRepo;
+using JsonProjectBE.Models;
 using Newtonsoft.Json.Linq;
 
 using JsonProjectBE.Handlers;
@@ -12,12 +13,6 @@ namespace JsonProjectBE.Controllers
     // ---> HTTP Request --> ControllerBase (Http...) --->  [ --> [ActionFilter.onRequest] --> Post() --> [ActionFilter.onRequested] --> ] ---> HttResponse
     public class JsonProcessorController : ControllerBase
     {
-        public class response
-        {
-            public string message { get; set; }
-            public string status { get; set; }
-        }
-
         // LEAN DomainDrivenDevelopment
 
         private readonly ILogger<JsonProcessorController> _logger;
@@ -29,6 +24,7 @@ namespace JsonProjectBE.Controllers
             _logger = logger;
         }
 
+        // resultProperty: "data_1", accessor: $.Data1[3].data_1
         [HttpPost(Name = "PostJsonProcessor")]
         public async Task<response> Post([FromBody] Models.Request request)
         {
@@ -38,12 +34,12 @@ namespace JsonProjectBE.Controllers
 
             JsonHandler _handler = new JsonHandler();
 
-            List<String> fields = _db.AsyncGetWantedFields( request.ClientId );
+            List<String> fields = _db.AsyncGetWantedFields(request.ClientId);
             //RETURN A DOCUMENT
             var data = _handler.CraftBaseDocument(request, fields);
 
             //STORE DOCUMENT UN MONGODB
-            if ( _db.AsyncStoreDocument(data).IsCompletedSuccessfully )
+            if (_db.AsyncStoreDocument(data).IsCompletedSuccessfully)
             {
                 return new response { message = "Document saved succesfully", status = "OK" };
             }
@@ -52,33 +48,7 @@ namespace JsonProjectBE.Controllers
                 return new response { message = "Document not saved", status = "FAILED" };
 
             }
-
-            //var data = request.Data.SelectTokens("$..Products[?(@.Price >= 50)].Name"); 
-            //if (_db.asyncStoreJson(data.ToString()).IsCompletedSuccessfully)
-            //if (_db.AsyncStoreJson(data.ToString()).IsCompletedSuccessfully)
-
-
-            //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            //{
-            //    Date = DateTime.Now.AddDays(index),
-            //    TemperatureC = Random.Shared.Next(-20, 55),
-            //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            //})
-            //.ToArray();
         }
+
     }
 }
-
-
-
-
-/*    
-{
-    "cliendId": "cli1",
-    "data": {
-                "VAT"= {}
-                "pokemons"=[]
-                "operationid"="string"
-            }
-}
-*/
