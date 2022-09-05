@@ -13,7 +13,7 @@ namespace JsonProjectBE.DBRepo
     {
         private IMongoCollection<Document> _documentCollection;
         private IMongoCollection<OperationLog> _logCollection;
-        private IMongoCollection<UserConfig> _userCollection;
+        private IMongoCollection<ClientConfig> _ClientConfigCollection;
 
         public Mongo()
         {
@@ -21,21 +21,29 @@ namespace JsonProjectBE.DBRepo
             var mongoDatabase = mongoClient.GetDatabase("onBoard2");
             _documentCollection = mongoDatabase.GetCollection<Document>("Document");
             _logCollection = mongoDatabase.GetCollection<OperationLog>("OperationLog");
-            _userCollection = mongoDatabase.GetCollection<UserConfig>("UserConfig");
+            _ClientConfigCollection = mongoDatabase.GetCollection<ClientConfig>("ClientConfig");
         }
 
         public Task AsyncStoreDocument(Document document)
         {
-            //Document doc = new Document
-            //{
-            //    originalFile = "hola",
-            //    extractedFile = "hola",
-            //    date = DateTime.Now.TimeOfDay,
-            //    ClientId = "Pedro Melenas"
-            //};
             _documentCollection.InsertOneAsync(document);
             return Task.CompletedTask;
         } 
+        public List<String> AsyncGetWantedFields( string clientId )
+        {
+            var _client = _ClientConfigCollection.Find(x => x.clientId == clientId).FirstOrDefaultAsync();
+            List<String> fields = new List<String>();
+            foreach ( String field in _client.Result.wantedFields)
+            {
+                fields.Add(field);
+            }
+            return fields;
+        }
+
+        public Task AsyncStoreJson(JObject data)
+        {
+            throw new NotImplementedException();
+        }
             //Document document = new Document
             //{
             //    originalFile = JObject.Parse(data),
@@ -43,7 +51,7 @@ namespace JsonProjectBE.DBRepo
             //    date = DateTime.Now.TimeOfDay,
             //    ClientId = "Pedro Melenas"
             //};
-            //return _userCollection.
+            //return _ClientConfigCollection.
 
 
         /// <summary>
@@ -67,31 +75,5 @@ namespace JsonProjectBE.DBRepo
         //    return Task.CompletedTask; 
         //}
         //---------------------------------------------------------------
-
-        //public String AsyncGetRequiredField(string user)
-        //{
-        //    //var requiredUser= _userCollection.Find(p => p.userid==user);
-        //    var requiredField = from _user in _userCollection.AsQueryable()
-        //                        where _user.userid.Contains(user)
-        //                        select _user.wantedField;
-
-        //    var asdf= requiredField.ToString();
-        //    return asdf;
-        //}
-
-        //public Task<String> AsyncGetRequiredField(string user)
-        //    => _userCollection.Find(f => f.Name == user)
-        //    ?.Select(s => new String (s.wantedField));
-        //}
-        public async Task<String> AsyncGetRequiredField(string user)
-        {
-            var _user= await _userCollection.Find(x => x.userId == user).FirstOrDefaultAsync();
-            return _user.wantedField;
-        }
-
-        public Task AsyncStoreJson(JObject data)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -7,7 +7,7 @@ namespace JsonProjectBE.Handlers
 {
     public class JsonHandler
     {
-        public Document CrafBaseDocument(Request request)
+        public Document CraftBaseDocument(Request request, List<String> fields)
         {
             Document document = new Document();
 
@@ -16,26 +16,13 @@ namespace JsonProjectBE.Handlers
             document.originalFile = BsonDocument.Parse( request.Data.ToString() );
 
             JObject extracted= new JObject();
-            extracted.Add("prices", request.Data["prices"].ToString());
-
+            foreach( String field in fields)
+            {
+                extracted.Add(field, request.Data[field].ToString());
+            }
             document.extractedFile = BsonDocument.Parse( extracted.ToString() );
             return document;
         }
-
-        //public BsonDocument TransformForCustomerSchema()
-        //    var client = "client1";
-        //    request.CliendId
-        //    Document document = new Document();
-        //    //save original json
-        //    JObject originalJson = requestToJson(request);
-        //    document.originalFile= originalJson;
-        //    //create new json with original json
-        //    if( client == request.CliendId)
-        //    {
-        //        //var wantedData = request.Data.SelectToken("Data.VAT");
-        //        var wantedData = request.Data.SelectToken("$.VAT");
-        //        document.extractedFile = (JObject)wantedData;
-        //    }
 
     }
 }
