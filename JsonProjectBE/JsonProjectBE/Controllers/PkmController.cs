@@ -30,7 +30,19 @@ namespace JsonProjectBE.Controllers
         [HttpPost(Name = "PkmUpload")]
         public async Task<response> Post([FromBody] Models.Request request)
         {
-            return new response { message = "Document saved succesfully", status = "OK" };
+            JsonHandler _handler = new JsonHandler();
+            List<String> fields = _db.AsyncGetClientRequirements(request.ClientId);
+            var data = _handler.CreateBasePkmDocument(request, fields);
+
+            if (_db.AsyncStorePkmDocument(data).IsCompletedSuccessfully)
+            {
+                return new response { message = "Document saved succesfully", status = "OK" };
+            }
+            else
+            {
+                return new response { message = "Document not saved", status = "FAILED" };
+
+            }
         }
     }
 }
