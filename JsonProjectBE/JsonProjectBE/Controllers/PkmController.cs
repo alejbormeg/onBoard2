@@ -38,9 +38,9 @@ namespace JsonProjectBE.Controllers
             List<String> fields = _db.AsyncGetClientRequirements(request.ClientId);
             PokemonDocument data = _handler.CreateBasePkmDocument(request, fields);
             JObject fullPkmInfo = await _pokemonService.GetPokeInfoAsync(data.Data.GetElement(fields[0]).Value.ToString());
+            PokemonDocument finalData = _handler.Update(data, fullPkmInfo);
 
-
-            if (_db.AsyncStorePkmDocument(data).IsCompletedSuccessfully)
+            if (_db.AsyncStorePkmDocument(finalData).IsCompletedSuccessfully)
             {
                 return new response { message = "Document saved succesfully", status = "OK" };
             }
@@ -50,5 +50,6 @@ namespace JsonProjectBE.Controllers
 
             }
         }
+
     }
 }

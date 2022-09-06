@@ -1,8 +1,11 @@
 using JsonProjectBE.DBRepo;
 using Microsoft.Extensions.Http;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using JsonProjectBE.Services;
+using JsonProjectBE.Models;
 using Polly;
+using JsonPatchSample;
 using Polly.Extensions.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers().AddNewtonsoftJson();
+
+builder.Services.AddControllers(options =>
+{
+    options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter());
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
