@@ -4,14 +4,22 @@ namespace JsonProjectBE.Services
 {
     public class PokemonService : IPokemonService
     {
-        HttpClient cliente_http;
-        public PokemonService()
+        private readonly HttpClient _httpClient;
+        private readonly String _url = "https://pokeapi.co/api/v2";
+        private readonly String _search = "/pokemon/";
+        public PokemonService(HttpClient httpClient)
         {
-            cliente_http = new HttpClient();
+            _httpClient = httpClient;
         }
-        public JObject GetPokeInfo(string name)
+        public async Task<JObject> GetPokeInfoAsync(string name)
         {
-            throw new NotImplementedException();
+            JObject pokemon = new JObject();
+            HttpResponseMessage response = await _httpClient.GetAsync( _url + _search + name.ToLower() );
+            if (response.IsSuccessStatusCode)
+            {
+                pokemon = JObject.Parse( await response.Content.ReadAsStringAsync() );
+            }
+            return pokemon;
         }
     }
 }

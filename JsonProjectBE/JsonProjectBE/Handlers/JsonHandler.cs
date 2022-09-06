@@ -1,4 +1,5 @@
 ﻿using JsonProjectBE.Models;
+using JsonProjectBE.Services;
 using Newtonsoft.Json.Linq;
 using JsonProjectBE.DBRepo;
 using MongoDB.Bson;
@@ -33,6 +34,9 @@ namespace JsonProjectBE.Handlers
             var asdf = request.Data;
             data.Add(location[0], request.Data.SelectToken(location[1])?.ToString() ?? "");
             document.Data = BsonDocument.Parse( data.ToString() );
+
+
+
             return document;
         }
     }

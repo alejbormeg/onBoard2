@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using JsonProjectBE.DBRepo;
 using JsonProjectBE.Models;
+using JsonProjectBE.Services;
 using Newtonsoft.Json.Linq;
 
 using JsonProjectBE.Handlers;
@@ -18,11 +19,13 @@ namespace JsonProjectBE.Controllers
 
         private readonly ILogger<PkmController> _logger;
         private IDBRepo _db;
+        private IPokemonService _pokemonService;
 
-        public PkmController(ILogger<PkmController> logger, Mongo db)
+        public PkmController(ILogger<PkmController> logger, Mongo db, IPokemonService pokemonService)
         {
             _db = db;
             _logger = logger;
+            _pokemonService = pokemonService;
         }
 
         // resultProperty: "data_1", accessor: $.Data1[3].data_1
@@ -31,8 +34,11 @@ namespace JsonProjectBE.Controllers
         public async Task<response> Post([FromBody] Models.Request request)
         {
             JsonHandler _handler = new JsonHandler();
+            
             List<String> fields = _db.AsyncGetClientRequirements(request.ClientId);
-            var data = _handler.CreateBasePkmDocument(request, fields);
+            PokemonDocument data = _handler.CreateBasePkmDocument(request, fields);
+            JObject fullPkmInfo = await _pokemonService.GetPokeInfoAsync(data.Data.GetElement(fields[0]).Value.ToString());
+
 
             if (_db.AsyncStorePkmDocument(data).IsCompletedSuccessfully)
             {

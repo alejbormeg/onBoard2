@@ -17,8 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<Mongo>();
 
 builder.Services.AddScoped<IDBRepo,Mongo>();
-
-//builder.AddHttpClient<IPokemonService, PokemonService>();
+//builder.Services.AddScoped<IPokemonService, PokemonService>();
 
 builder.Services.AddHttpClient<IPokemonService, PokemonService>()
                 .AddPolicyHandler(GetRetryPolicy());
