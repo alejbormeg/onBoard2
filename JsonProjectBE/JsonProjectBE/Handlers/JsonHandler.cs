@@ -24,5 +24,16 @@ namespace JsonProjectBE.Handlers
             return document;
         }
 
+        public PokemonDocument CreateBasePkmDocument(Request request, List<string> location)
+        {
+            PokemonDocument document = new PokemonDocument();
+
+            document.ClientId = request.ClientId;
+            JObject data = new JObject();
+            var asdf = request.Data;
+            data.Add(location[0], request.Data.SelectToken(location[1])?.ToString() ?? "");
+            document.Data = BsonDocument.Parse( data.ToString() );
+            return document;
+        }
     }
 }
