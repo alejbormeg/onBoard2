@@ -4,7 +4,7 @@ namespace JsonProjectBE.Services
 {
     public interface IPokemonService
     {
-        public JObject GetPokeInfo(String name);
+        public Task<HttpResponseMessage> GetPokeInfoAsync(String name);
 
     }
 }

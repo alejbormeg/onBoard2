@@ -5,6 +5,7 @@ using JsonProjectBE.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json.Linq;
+using Polly;
 using System.Net;
 using static JsonProjectBE.Controllers.JsonProcessorController;
 
@@ -12,6 +13,7 @@ namespace JSonProjectBE.Tests
 {
     public class Tests
     {
+
         [Fact]
         public async Task TestingPost()
         {
@@ -37,11 +39,14 @@ namespace JSonProjectBE.Tests
         public async Task TestingRetry()
         {
             var mock_http_client = new Mock<HttpClient>();
-            var task = new Mock<Task<HttpResponseMessage>>();
-            task.Setup(x => x.Result).Returns(new HttpResponseMessage(HttpStatusCode.BadRequest));
-            //Change the get async behaviour
-            mock_http_client.Setup(p => p.GetAsync("https://pokeapi.co/api/v2/pokemon/ditto")).Returns();
-
+            var mock_pokemon_service = new Mock<PokemonService>(mock_http_client.Object);
+            HttpResponseMessage httpResponseMessage = new HttpResponseMessage { StatusCode = HttpStatusCode.InternalServerError };
+            var response_task=Task.FromResult(httpResponseMessage);
+            mock_pokemon_service.Setup(p => p.GetPokeInfoAsync("https://pokeapi.co/api/v9/pokemon/dgnfñagfkbdabgfkiasg")).Returns(response_task);
+            await mock_pokemon_service.Object.TestRetry("https://pokeapi.co/api/v9/pokemon/dgnfñagfkbdabgfkiasg");
+            var invocations = mock_pokemon_service.Invocations.Count();
+            //4 because the TestRetryCall count as an invocation
+            Assert.True(invocations == 4);
         }
     }
 

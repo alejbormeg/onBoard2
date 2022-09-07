@@ -18,19 +18,30 @@ builder.Services.AddSingleton<Mongo>();
 
 builder.Services.AddScoped<IDBRepo,Mongo>();
 
-//builder.AddHttpClient<IPokemonService, PokemonService>();
-
-builder.Services.AddHttpClient<IPokemonService, PokemonService>()
-                .AddPolicyHandler(GetRetryPolicy());
-
-IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+builder.Services.AddHttpClient<IPokemonService, PokemonService>().ConfigureHttpClient(c =>
 {
-    return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
-                                                                        retryAttempt)));
-}
+    c.BaseAddress = new Uri("");
+});
+
+// Retry policy for every method who returns an error
+var httpRetryPolicy = Policy.HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode)
+    .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(retryAttempt));
+
+
+
+builder.Services.AddSingleton<IAsyncPolicy<HttpResponseMessage>>(httpRetryPolicy);
+
+//builder.Services.AddHttpClient<IPokemonService, PokemonService>()
+//                .AddPolicyHandler(GetRetryPolicy());
+
+//IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+//{
+//    return HttpPolicyExtensions
+//            .HandleTransientHttpError()
+//            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+//            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2,
+//                                                                        retryAttempt)));
+//}
 
 var app = builder.Build();
 
